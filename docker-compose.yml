@@ -1,0 +1,30 @@
+name: backend-smart-garden-golang
+
+services:
+
+  db:
+    image: mysql:8.0.36
+    container_name: backend-smart-garden-golang-db
+
+    ports:
+      - 3002:3306
+
+    environment:
+      MYSQL_ROOT_PASSWORD: 'toor'
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+
+    volumes:
+      - backend-smart-garden-golang-data:/var/lib/mysql
+
+    networks:
+      - backend-smart-garden-golang-net
+
+volumes:
+  backend-smart-garden-golang-data:
+    driver: local
+
+networks:
+  backend-smart-garden-golang-net:
+    driver: bridge
