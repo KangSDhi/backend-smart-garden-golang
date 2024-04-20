@@ -17,4 +17,5 @@ func SetupGardenRouter(router fiber.Router) {
 	})
 
 	gardenRoutes.Post("/create", controllers.CreateDataGarden)
+	gardenRoutes.Get("/last", controllers.GetLastDataGarden)
 }

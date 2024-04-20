@@ -12,3 +12,12 @@ func SaveDataGarden(garden entity.Garden) (entity.Garden, error) {
 	}
 	return garden, err
 }
+
+func GetLastRecordGarden() (entity.Garden, error) {
+	var garden entity.Garden
+	err := config.DB.Last(&garden).Error
+	if err != nil {
+		return entity.Garden{}, err
+	}
+	return garden, nil
+}
