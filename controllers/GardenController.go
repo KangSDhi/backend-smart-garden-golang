@@ -74,6 +74,27 @@ func CreateDataGarden(ctx *fiber.Ctx) error {
 	})
 }
 
+func GetLastDataGarden(ctx *fiber.Ctx) error {
+	garden, err := repository.GetLastRecordGarden()
+
+	if err != nil {
+		return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"code":   fiber.StatusNotFound,
+			"errors": err.Error(),
+		})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"code":    fiber.StatusOK,
+		"message": "Ok Zone",
+		"data": fiber.Map{
+			"nama_node":  garden.NamaNode,
+			"kelembapan": garden.Kelembapan,
+			"tanggal":    garden.TanggalNode,
+		},
+	})
+}
+
 func tanggalNodeParser(tanggalNode string) time.Time {
 	layoutTime := "2006-01-02 15:04:05"
 
