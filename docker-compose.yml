@@ -21,6 +21,16 @@ services:
     networks:
       - backend-smart-garden-golang-net
 
+  app:
+    image: kangstek/backend-smart-garden-golang:beta-0.0.2
+    container_name: backend-smart-garden-golang-app
+
+    ports:
+      - 3000:3000
+
+    networks:
+      - backend-smart-garden-golang-net
+
 volumes:
   backend-smart-garden-golang-data:
     driver: local
