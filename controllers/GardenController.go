@@ -51,7 +51,7 @@ func CreateDataGarden(ctx *fiber.Ctx) error {
 	gardenInput := entity.Garden{
 		NamaNode:    input.NamaNode,
 		Kelembapan:  input.Kelembapan,
-		TanggalNode: tanggalNodeParser(input.TanggalNode),
+		TanggalNode: input.TanggalNode,
 	}
 
 	gardenOutput, err := repository.SaveDataGarden(gardenInput)

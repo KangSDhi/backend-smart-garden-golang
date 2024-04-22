@@ -23,7 +23,7 @@ COPY . .
 RUN go build -o main .
 
 # Start from scratch (no base image)
-FROM ubuntu:latest
+FROM scratch
 
 WORKDIR /app/
 

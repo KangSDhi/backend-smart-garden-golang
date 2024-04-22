@@ -1,39 +1,50 @@
 package config
 
 import (
+	"database/sql"
 	"fmt"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
+	"github.com/go-sql-driver/mysql"
 	"log"
 	"os"
+	"time"
 )
 
-var DB *gorm.DB
+var DB *sql.DB
 
-func InitDB() *gorm.DB {
+func InitDB() *sql.DB {
 	DB = connectDB()
 	return DB
 }
 
-func connectDB() *gorm.DB {
+func connectDB() *sql.DB {
 	var err error
-	host := os.Getenv("DB_HOST")
-	username := os.Getenv("DB_USERNAME")
-	password := os.Getenv("DB_PASSWORD")
-	dbname := os.Getenv("DB_DATABASE")
-	port := os.Getenv("DB_PORT")
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", username, password, host, port, dbname)
+	cfg := mysql.Config{
+		User:                 os.Getenv("DB_USERNAME"),
+		Passwd:               os.Getenv("DB_PASSWORD"),
+		Net:                  "tcp",
+		Addr:                 fmt.Sprintf("%s:%s", os.Getenv("DB_HOST"), os.Getenv("DB_PORT")),
+		DBName:               os.Getenv("DB_DATABASE"),
+		AllowNativePasswords: true,
+	}
 
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		SkipDefaultTransaction: true,
-	})
-
+	DB, err = sql.Open("mysql", cfg.FormatDSN())
 	if err != nil {
-		log.Fatal("Error connecting to database :", err)
+		log.Fatal("Error connecting database :", err)
 		return nil
 	}
+
+	pingErr := DB.Ping()
+	if pingErr != nil {
+		log.Fatal("Error Ping Database :", pingErr)
+	}
+
+	DB.SetMaxIdleConns(10)
+	DB.SetMaxOpenConns(100)
+	DB.SetConnMaxIdleTime(5 * time.Minute)
+	DB.SetConnMaxLifetime(60 * time.Minute)
+
 	log.Println("Successfully connected to the database")
 
-	return db
+	return DB
 }
