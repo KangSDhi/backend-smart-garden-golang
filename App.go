@@ -1,8 +1,9 @@
 package main
 
 import (
-	"backend-smart-garden/config"
-	"backend-smart-garden/routes"
+	"backend-smart-garden-golang/config"
+	"backend-smart-garden-golang/entity"
+	"backend-smart-garden-golang/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
@@ -25,6 +26,10 @@ func loadEnv() {
 
 func loadDatabase() {
 	config.InitDB()
+	err := config.DB.AutoMigrate(&entity.Garden{})
+	if err != nil {
+		log.Fatal("Error Migrate Garden")
+	}
 }
 
 func serveApplication() {
