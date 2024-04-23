@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"backend-smart-garden/dto"
-	"backend-smart-garden/entity"
-	"backend-smart-garden/repository"
+	"backend-smart-garden-golang/dto"
+	"backend-smart-garden-golang/entity"
+	"backend-smart-garden-golang/repository"
 	"errors"
 	"fmt"
 	"github.com/go-playground/validator/v10"
@@ -51,7 +51,7 @@ func CreateDataGarden(ctx *fiber.Ctx) error {
 	gardenInput := entity.Garden{
 		NamaNode:    input.NamaNode,
 		Kelembapan:  input.Kelembapan,
-		TanggalNode: input.TanggalNode,
+		TanggalNode: tanggalNodeParser(input.TanggalNode),
 	}
 
 	gardenOutput, err := repository.SaveDataGarden(gardenInput)

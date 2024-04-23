@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"backend-smart-garden/controllers"
+	"backend-smart-garden-golang/controllers"
 	"github.com/gofiber/fiber/v2"
 )
 
