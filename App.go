@@ -26,7 +26,9 @@ func loadEnv() {
 
 func loadDatabase() {
 	config.InitDB()
-	err := config.DB.AutoMigrate(&entity.Garden{})
+	err := config.DB.AutoMigrate(
+		&entity.Garden{},
+		&entity.SoilMoitureSensor{})
 	if err != nil {
 		log.Fatal("Error Migrate Garden")
 	}
@@ -51,6 +53,7 @@ func serveApplication() {
 	})
 
 	routes.SetupGardenRouter(apiRoutes)
+	routes.SetupSoilMoistureSensorRouter(apiRoutes)
 
 	err := app.Listen(":3000")
 	if err != nil {

@@ -11,8 +11,8 @@ import (
 	"time"
 )
 
-func CreateDataGarden(ctx *fiber.Ctx) error {
-	input := new(dto.RequestGarden)
+func CreateDataSoilMoistureSensor(ctx *fiber.Ctx) error {
+	input := new(dto.RequestSoilMoistureSensor)
 
 	if err := ctx.BodyParser(input); err != nil {
 		return ctx.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
@@ -48,13 +48,13 @@ func CreateDataGarden(ctx *fiber.Ctx) error {
 		})
 	}
 
-	gardenInput := entity.Garden{
-		NamaNode:    input.NamaNode,
-		Kelembapan:  input.Kelembapan,
-		TanggalNode: tanggalNodeParser(input.TanggalNode),
+	soilMoistureSensorInput := entity.SoilMoitureSensor{
+		NilaiSensorAnalog: input.NilaiSensorAnalog,
+		LabelSensorAnalog: input.LabelSensorAnalog,
+		TanggalSensor:     tanggalSensor(input.TanggalSensor),
 	}
 
-	gardenOutput, err := repository.SaveDataGarden(gardenInput)
+	soilMoistureSensorOutput, err := repository.SaveDataSoilMoistureSensor(soilMoistureSensorInput)
 
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -65,42 +65,22 @@ func CreateDataGarden(ctx *fiber.Ctx) error {
 
 	return ctx.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"code":    fiber.StatusCreated,
-		"message": "Ok zone",
+		"message": "Data Soil Moisture Sensor Created",
 		"data": fiber.Map{
-			"nama_node":  gardenOutput.NamaNode,
-			"kelembapan": fmt.Sprintf("%v%s", gardenOutput.Kelembapan, "%"),
-			"tanggal":    gardenOutput.TanggalNode,
+			"nilai_analog_sensor": soilMoistureSensorOutput.NilaiSensorAnalog,
+			"label_analog_sensor": soilMoistureSensorOutput.LabelSensorAnalog,
+			"tanggal_sensor":      soilMoistureSensorOutput.TanggalSensor,
 		},
 	})
+
 }
 
-func GetLastDataGarden(ctx *fiber.Ctx) error {
-	garden, err := repository.GetLastRecordGarden()
-
-	if err != nil {
-		return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"code":   fiber.StatusNotFound,
-			"errors": err.Error(),
-		})
-	}
-
-	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-		"code":    fiber.StatusOK,
-		"message": "Ok Zone",
-		"data": fiber.Map{
-			"nama_node":  garden.NamaNode,
-			"kelembapan": garden.Kelembapan,
-			"tanggal":    garden.TanggalNode,
-		},
-	})
-}
-
-func tanggalNodeParser(tanggalNode string) time.Time {
+func tanggalSensor(tanggalSensor string) time.Time {
 	layoutTime := "2006-01-02 15:04:05"
 
 	loc, _ := time.LoadLocation("Asia/Jakarta")
 
-	t, err := time.ParseInLocation(layoutTime, tanggalNode, loc)
+	t, err := time.ParseInLocation(layoutTime, tanggalSensor, loc)
 
 	if err != nil {
 		fmt.Println("Error parsing time:", err)
