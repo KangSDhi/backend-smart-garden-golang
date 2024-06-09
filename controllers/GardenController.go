@@ -4,11 +4,11 @@ import (
 	"backend-smart-garden-golang/dto"
 	"backend-smart-garden-golang/entity"
 	"backend-smart-garden-golang/repository"
+	"backend-smart-garden-golang/utils"
 	"errors"
 	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
-	"time"
 )
 
 func CreateDataGarden(ctx *fiber.Ctx) error {
@@ -51,7 +51,7 @@ func CreateDataGarden(ctx *fiber.Ctx) error {
 	gardenInput := entity.Garden{
 		NamaNode:    input.NamaNode,
 		Kelembapan:  input.Kelembapan,
-		TanggalNode: tanggalNodeParser(input.TanggalNode),
+		TanggalNode: utils.StringDatetimeToTime(input.TanggalNode),
 	}
 
 	gardenOutput, err := repository.SaveDataGarden(gardenInput)
@@ -93,18 +93,4 @@ func GetLastDataGarden(ctx *fiber.Ctx) error {
 			"tanggal":    garden.TanggalNode,
 		},
 	})
-}
-
-func tanggalNodeParser(tanggalNode string) time.Time {
-	layoutTime := "2006-01-02 15:04:05"
-
-	loc, _ := time.LoadLocation("Asia/Jakarta")
-
-	t, err := time.ParseInLocation(layoutTime, tanggalNode, loc)
-
-	if err != nil {
-		fmt.Println("Error parsing time:", err)
-	}
-
-	return t
 }

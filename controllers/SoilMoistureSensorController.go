@@ -4,11 +4,11 @@ import (
 	"backend-smart-garden-golang/dto"
 	"backend-smart-garden-golang/entity"
 	"backend-smart-garden-golang/repository"
+	"backend-smart-garden-golang/utils"
 	"errors"
 	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
-	"time"
 )
 
 func CreateDataSoilMoistureSensor(ctx *fiber.Ctx) error {
@@ -51,7 +51,7 @@ func CreateDataSoilMoistureSensor(ctx *fiber.Ctx) error {
 	soilMoistureSensorInput := entity.SoilMoitureSensor{
 		NilaiSensorAnalog: input.NilaiSensorAnalog,
 		LabelSensorAnalog: input.LabelSensorAnalog,
-		TanggalSensor:     tanggalSensor(input.TanggalSensor),
+		TanggalSensor:     utils.StringDatetimeToTime(input.TanggalSensor),
 	}
 
 	soilMoistureSensorOutput, err := repository.SaveDataSoilMoistureSensor(soilMoistureSensorInput)
@@ -73,18 +73,4 @@ func CreateDataSoilMoistureSensor(ctx *fiber.Ctx) error {
 		},
 	})
 
-}
-
-func tanggalSensor(tanggalSensor string) time.Time {
-	layoutTime := "2006-01-02 15:04:05"
-
-	loc, _ := time.LoadLocation("Asia/Jakarta")
-
-	t, err := time.ParseInLocation(layoutTime, tanggalSensor, loc)
-
-	if err != nil {
-		fmt.Println("Error parsing time:", err)
-	}
-
-	return t
 }
